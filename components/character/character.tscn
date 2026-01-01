@@ -1,0 +1,63 @@
+[gd_scene load_steps=12 format=3 uid="uid://cxwxcivo5cds2"]
+
+[ext_resource type="Script" uid="uid://bb0t2ovl7wifo" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_5xa0e"]
+[ext_resource type="Shape2D" uid="uid://ck46inqem1w3l" path="res://resources/character_collision_shape.tres" id="1_ib46w"]
+[ext_resource type="Script" uid="uid://b54weu6id50at" path="res://scripts/character.gd" id="1_kenwf"]
+[ext_resource type="SpriteFrames" uid="uid://cjgio70hvkpsh" path="res://resources/character_sprite_frames.tres" id="2_50a7f"]
+[ext_resource type="Script" uid="uid://8hn4kne15ac5" path="res://addons/beehave/nodes/composites/selector.gd" id="2_p1osb"]
+[ext_resource type="Script" uid="uid://cg016dbe7gs1x" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_5pm8e"]
+[ext_resource type="Script" uid="uid://bsu7h2hgnm6pi" path="res://scripts/is_player_visible.gd" id="4_p1osb"]
+[ext_resource type="Script" uid="uid://bpfrf86cide4i" path="res://scripts/chase_player.gd" id="5_uqrhf"]
+[ext_resource type="Script" uid="uid://dtc3ogh0jr1t2" path="res://scripts/attack_player.gd" id="6_cxvbt"]
+[ext_resource type="Script" uid="uid://d26igab8us7jo" path="res://scripts/move_to_patrol_point.gd" id="7_cxvbt"]
+[ext_resource type="Script" uid="uid://stwcxkg614ac" path="res://scripts/wait_at_patrol_point.gd" id="8_ahdda"]
+
+[node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_kenwf")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = ExtResource("1_ib46w")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_50a7f")
+animation = &"walk"
+autoplay = "idle"
+frame_progress = 0.3426518
+
+[node name="BehaviorTree" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
+script = ExtResource("1_5xa0e")
+blackboard = NodePath("@Node@21342")
+actor = NodePath("")
+metadata/_custom_type_script = "uid://bb0t2ovl7wifo"
+
+[node name="SelectorComposite" type="Node" parent="BehaviorTree"]
+script = ExtResource("2_p1osb")
+metadata/_custom_type_script = "uid://8hn4kne15ac5"
+
+[node name="AttackSequence" type="Node" parent="BehaviorTree/SelectorComposite"]
+script = ExtResource("3_5pm8e")
+metadata/_custom_type_script = "uid://cg016dbe7gs1x"
+
+[node name="IsPlayerVisible" type="Node" parent="BehaviorTree/SelectorComposite/AttackSequence"]
+script = ExtResource("4_p1osb")
+metadata/_custom_type_script = "uid://bsu7h2hgnm6pi"
+
+[node name="ChasePlayer" type="Node" parent="BehaviorTree/SelectorComposite/AttackSequence"]
+script = ExtResource("5_uqrhf")
+metadata/_custom_type_script = "uid://bpfrf86cide4i"
+
+[node name="AttackPlayer" type="Node" parent="BehaviorTree/SelectorComposite/AttackSequence"]
+script = ExtResource("6_cxvbt")
+metadata/_custom_type_script = "uid://dtc3ogh0jr1t2"
+
+[node name="PatrolSequence" type="Node" parent="BehaviorTree/SelectorComposite"]
+script = ExtResource("3_5pm8e")
+metadata/_custom_type_script = "uid://cg016dbe7gs1x"
+
+[node name="MoveToPatrolPoint" type="Node" parent="BehaviorTree/SelectorComposite/PatrolSequence"]
+script = ExtResource("7_cxvbt")
+metadata/_custom_type_script = "uid://d26igab8us7jo"
+
+[node name="WaitAtPatrolPoint" type="Node" parent="BehaviorTree/SelectorComposite/PatrolSequence"]
+script = ExtResource("8_ahdda")
+metadata/_custom_type_script = "uid://stwcxkg614ac"

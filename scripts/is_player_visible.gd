@@ -1,3 +1,4 @@
+@tool
 class_name IsPlayerVisible
 extends ConditionLeaf
 
@@ -6,7 +7,7 @@ extends ConditionLeaf
 
 func tick(actor: Node, blackboard: Blackboard) -> int:
 	# Get player reference (could be cached in blackboard)
-	var player = get_tree().get_first_node_in_group("player")
+	var player = get_tree().get_first_node_in_group(&"player")
 	if not player:
 		return FAILURE
 	

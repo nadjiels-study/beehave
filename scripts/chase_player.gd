@@ -2,28 +2,33 @@
 class_name ChasePlayer
 extends ActionLeaf
 
-@export var move_speed: float = 100.0
-@export var attack_range: float = 30.0
+@export var max_distance: float = 128.0
+
+@export var min_distance: float = 16.0
 
 func tick(actor: Node, blackboard: Blackboard) -> int:
-	# Get the player position from the blackboard
-	var player_pos = blackboard.get_value("player_position")
-	if not player_pos:
-		return FAILURE
+	var character := actor as Character
+	var player := blackboard.get_value(&"player", null) as CharacterBody2D
 	
-	# Calculate direction to player
-	var direction = (player_pos - actor.global_position).normalized()
+	if not player: return FAILURE
+	
+	var player_position := player.global_position
+	
+	var distance := character.global_position.distance_to(player_position)
+	
+	if distance > max_distance:
+		character.direction = Vector2.ZERO
+		
+		return FAILURE
+	if distance <= min_distance:
+		character.direction = Vector2.ZERO
+		
+		return SUCCESS
+	
+	var direction := character.global_position.direction_to(player_position)
 	
 	# Move toward player
-	actor.global_position += direction * move_speed * get_physics_process_delta_time()
-	
-	# Store attack range in blackboard
-	blackboard.set_value("attack_range", attack_range)
-	
-	# Check if within attack range
-	var distance = actor.global_position.distance_to(player_pos)
-	if distance <= attack_range:
-		return SUCCESS
+	character.direction = direction
 	
 	# Still chasing
 	return RUNNING

@@ -5,6 +5,7 @@
 [ext_resource type="SpriteFrames" uid="uid://dqdnoxy6w8xp4" path="res://resources/player_sprite_frames.tres" id="2_kfe3d"]
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 0
 script = ExtResource("1_ph1f6")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
